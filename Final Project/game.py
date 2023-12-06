@@ -51,20 +51,10 @@ def checkCollision(platforms):
             and hero.get_y() + hero.get_size() > platform[1]
         ):
             # Collision occurred, stop falling/jumping
-            hero.set_jump(False)
             hero.set_y_speed(0)
+            hero.set_y(platform[1] - hero.get_size())
             num += 1
-            #Last platform in list is objective platform
-            if platform[0] == platforms[-1][0]:
-                game.screen.fill(WHITE)
-                game.level += 1
-                game.width += 100
-                game.height += 100
-                game.screen = pygame.display.set_mode((game.width, game.height))
-                hero.set_y(game.height - 100)
 
-    if num <=0:
-        hero.set_jump(True)
 
 # Main game loop
 while True:
@@ -91,6 +81,9 @@ while True:
     hero.move_x()
     hero.move_y()
 
+    
+   
+
     # Keep the player within the screen bounds
     if hero.get_y() > HEIGHT - hero.get_size():
         hero.set_y(HEIGHT - hero.get_size())
@@ -110,6 +103,9 @@ while True:
     #Draw Rectangles
     lvl1_rects = [(300, 300, 200, 20)]
     pygame.draw.rect(screen, (0, 0, 0), (lvl1_rects[0]))
+
+    #Check Platform Collisions
+    checkCollision(lvl1_rects)
 
     # Update the display
     pygame.display.flip()
