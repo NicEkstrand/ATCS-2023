@@ -15,9 +15,11 @@ class Game:
     WHITE = (255, 255, 255)
     RED = (255, 0, 0)
 
-    def __init__(self, level=0):
+    def __init__(self, level=1):
         self.hero = Player(50, self.WIDTH // 2 - 50 // 2, self.HEIGHT // 2 - 50 // 2, 0, 0)
         self.level = level
+        self.level_platforms = [[(300, 300, 200, 20), (400, 400, 100, 20)],
+                         [(200, 200, 100, 20)]]
         self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         self.FPS = 60
 
@@ -42,7 +44,7 @@ class Game:
 
                     #Last platform in list is objective platform
                     if platform[0] == platforms[-1][0]:
-                        game.level += 1
+                        self.level += 1
                         game.WIDTH += 100
                         game.HEIGHT += 100
                         self.background_img = pygame.transform.scale(self.background_img, (self.WIDTH, self.HEIGHT))
@@ -50,12 +52,13 @@ class Game:
                         game.hero.set_y(game.HEIGHT - 100)
 
 
-
+    def drawPlatforms(self):
+        for platform in self.level_platforms[self.level - 1]:
+            pygame.draw.rect(self.screen, (0, 0, 0), platform)
 
     def run(self):
         # Create the game window
         clock = pygame.time.Clock()
-        
         pygame.init()
 
         # Main game loop
@@ -102,16 +105,12 @@ class Game:
             pygame.draw.rect(self.screen, self.RED, (self.hero.get_x(), self.hero.get_y(), self.hero.get_size(), self.hero.get_size()))
 
             #Draw Rectangles
-            lvl1_rects = [(300, 300, 200, 20), (400, 200, 100, 20)]
-
-            for platform in lvl1_rects:
-                pygame.draw.rect(self.screen, (0, 0, 0), platform)
+            self.drawPlatforms()
 
             #Check Platform Collisions
-            self.checkCollision(lvl1_rects)
+            self.checkCollision(self.level_platforms[self.level - 1])
 
             # Update the display
-            
             pygame.display.flip()
 
             # Cap the frame rate
