@@ -29,7 +29,6 @@ class Game:
     
      # Collision detection with platforms
     def checkCollision(self, platforms):
-            num = 0
             for platform in platforms:
                 if (
                     self.hero.get_x() < platform[0] + platform[2]
@@ -40,7 +39,15 @@ class Game:
                     # Collision occurred, stop falling/jumping
                     self.hero.set_y_speed(0)
                     self.hero.set_y(platform[1] - self.hero.get_size())
-                    num += 1
+
+                    #Last platform in list is objective platform
+                    if platform[0] == platforms[-1][0]:
+                        game.level += 1
+                        game.WIDTH += 100
+                        game.HEIGHT += 100
+                        self.background_img = pygame.transform.scale(self.background_img, (self.WIDTH, self.HEIGHT))
+                        game.screen = pygame.display.set_mode((game.WIDTH, game.HEIGHT))
+                        game.hero.set_y(game.HEIGHT - 100)
 
 
 
@@ -54,7 +61,7 @@ class Game:
         # Main game loop
         while True:
             self.screen.blit(self.background_img, (0, 0))
-            
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
