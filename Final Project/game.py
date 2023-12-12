@@ -20,6 +20,7 @@ class Game:
     #Constructor
     def __init__(self, level=1):
         #Instance Variables
+        self.days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
         self.score = "100"
         self.hero = Player(25, self.WIDTH // 2 - 50 // 2, self.HEIGHT // 2 - 50 // 2, 0, 0)
         self.distraction = Distraction(self.WIDTH // 2 - 50 // 2, 0, 25)
@@ -27,7 +28,9 @@ class Game:
         self.level_platforms = [[(300, 300, 200, 20), (400, 400, 100, 20), (150, 200, 100, 20), (150, 100, 75, 10), (500, 500, 30, 20), (50, 50, 50, 20)],
                          [(400, 250, 100, 20), (100, 600, 80, 20), (300, 550, 50, 20), (100, 450, 40, 20), (200, 375, 100, 20), (500, 150, 100, 20), (650, 50, 40, 20)],
                          [(300, 750, 50, 10), (500, 650, 100, 10), (750, 550, 30, 10), (500, 450, 100, 10), (500, 350, 50, 10), (500, 250, 10, 10), (100, 540, 50, 20)],
-                         [(0, 800, 40, 20)]]
+                         [(0, 800, 40, 20), (200, 700, 40, 20), (0, 600, 40, 20), (201, 500, 40, 20), (400, 500, 40, 20), (500, 400, 40, 20), (800, 700, 40, 20), (1000, 600, 40, 20)],
+                         [(400, 900, 30, 20), (300, 800, 30, 20), (200, 700, 30, 20), (100, 600, 30, 20), (300, 500, 30, 20), (200, 400, 30, 20), (200, 300, 30, 20), (0, 200, 20, 10), (500, 800, 30, 20), 
+                          (600, 700, 30, 20), (900, 700, 30, 10), (1000, 600, 30, 10), (1001, 500, 30, 10)]]
         self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         self.FPS = 60
 
@@ -38,7 +41,7 @@ class Game:
         self.distraction_img = pygame.transform.scale(self.background_img, (self.WIDTH, self.HEIGHT))
 
         self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
-        pygame.display.set_caption("Low Gravity Platformer")
+        pygame.display.set_caption("CogniClimb")
     
      # Collision detection with platforms
     def checkCollision(self, platforms):
@@ -130,8 +133,11 @@ class Game:
             #Check Platform Collisions
             self.checkCollision(self.level_platforms[self.level - 1])
 
-            #Draw Score
+            #Draw Score and Day
             self.screen.blit(font.render(self.score, True, (0, 0, 0)), (10, 0))
+            self.screen.blit(font.render(self.days[self.level - 1], True, (0, 0, 0)), (self.WIDTH / 2 - 50, 0))
+
+            
 
             #Draw Distractions
             pygame.draw.rect(self.screen, (235, 213, 52), (self.distraction.get_x(), self.distraction.get_y(), self.distraction.get_size(), self.distraction.get_size()))
