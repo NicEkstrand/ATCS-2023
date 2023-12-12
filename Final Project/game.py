@@ -24,8 +24,10 @@ class Game:
         self.hero = Player(25, self.WIDTH // 2 - 50 // 2, self.HEIGHT // 2 - 50 // 2, 0, 0)
         self.distraction = Distraction(self.WIDTH // 2 - 50 // 2, 0, 25)
         self.level = level
-        self.level_platforms = [[(300, 300, 200, 20), (400, 400, 100, 20)],
-                         [(200, 200, 100, 20)]]
+        self.level_platforms = [[(300, 300, 200, 20), (400, 400, 100, 20), (150, 200, 100, 20), (150, 100, 75, 10), (500, 500, 30, 20), (50, 50, 50, 20)],
+                         [(400, 250, 100, 20), (100, 600, 80, 20), (300, 550, 50, 20), (100, 450, 40, 20), (200, 375, 100, 20), (500, 150, 100, 20), (650, 50, 40, 20)],
+                         [(300, 750, 50, 10), (500, 650, 100, 10), (750, 550, 30, 10), (500, 450, 100, 10), (500, 350, 50, 10), (500, 250, 10, 10), (100, 540, 50, 20)],
+                         [(0, 800, 40, 20)]]
         self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         self.FPS = 60
 
@@ -69,10 +71,16 @@ class Game:
         # Create the game window
         clock = pygame.time.Clock()
         pygame.init()
+        pygame.mixer.init()
 
         # Set up font
         font = pygame.font.Font(None, 36)
 
+        # Load a sound file
+        pygame.mixer.music.load("music/Cherry_Tree.mp3")      
+
+        #Play Music
+        pygame.mixer.music.play(-1)
         # Main game loop
         while True:
             self.screen.blit(self.background_img, (0, 0))
