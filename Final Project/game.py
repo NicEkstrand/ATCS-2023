@@ -21,7 +21,7 @@ class Game:
     def __init__(self, level=1):
         #Instance Variables
         self.days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-        self.score = "100"
+        self.score = 100
         self.hero = Player(25, self.WIDTH // 2 - 50 // 2, self.HEIGHT // 2 - 50 // 2, 0, 0)
         self.distraction = Distraction(self.WIDTH // 2 - 50 // 2, 0, 25, 1)
         self.level = level
@@ -65,6 +65,14 @@ class Game:
                         game.screen = pygame.display.set_mode((game.WIDTH, game.HEIGHT))
                         game.hero.set_y(game.HEIGHT - 100)
 
+    def checkDistractionCollision(self):
+        if (
+            self.hero.get_x() < self.distraction.get_x() + self.distraction.get_size()
+            and self.hero.get_x() + self.hero.get_size() > self.distraction.get_x()
+            and self.hero.get_y() < self.distraction.get_y() + self.distraction.get_size()
+            and self.hero.get_y() + self.hero.get_size() > self.distraction.get_y()
+            ):
+            self.score -= 1
 
     def drawPlatforms(self):
         for platform in self.level_platforms[self.level - 1]:
@@ -134,9 +142,10 @@ class Game:
 
             #Check Platform Collisions
             self.checkCollision(self.level_platforms[self.level - 1])
+            self.checkDistractionCollision()
 
             #Draw Score and Day
-            self.screen.blit(font.render(self.score, True, (0, 0, 0)), (10, 0))
+            self.screen.blit(font.render(str(self.score), True, (0, 0, 0)), (10, 0))
             self.screen.blit(font.render(self.days[self.level - 1], True, (0, 0, 0)), (self.WIDTH / 2 - 50, 0))
 
             #
