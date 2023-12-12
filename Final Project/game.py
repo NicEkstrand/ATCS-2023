@@ -1,30 +1,39 @@
 import pygame
 import sys
 from player import *
+from distraction import *
 
 class Game:
     # Constants
     WIDTH, HEIGHT = 800, 600
     FPS = 60
     GRAVITY = 0.5
-    JUMP_HEIGHT = -20
+    JUMP_HEIGHT = -10
     PLAYER_SPEED = 7
+
     
 
-    # Colors
+    #Colors
     WHITE = (255, 255, 255)
     RED = (255, 0, 0)
 
+    #Constructor
     def __init__(self, level=1):
-        self.hero = Player(50, self.WIDTH // 2 - 50 // 2, self.HEIGHT // 2 - 50 // 2, 0, 0)
+        #Instance Variables
+        self.score = "100"
+        self.hero = Player(25, self.WIDTH // 2 - 50 // 2, self.HEIGHT // 2 - 50 // 2, 0, 0)
+        self.distraction = Distraction(self.WIDTH // 2 - 50 // 2, 0, 25)
         self.level = level
         self.level_platforms = [[(300, 300, 200, 20), (400, 400, 100, 20)],
                          [(200, 200, 100, 20)]]
         self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         self.FPS = 60
 
+        #Makes Pygame window
         self.background_img = pygame.image.load("images/Game_Background.png")
         self.background_img = pygame.transform.scale(self.background_img, (self.WIDTH, self.HEIGHT))
+        self.distraction_img = pygame.image.load("images/Youtube.png")
+        self.distraction_img = pygame.transform.scale(self.background_img, (self.WIDTH, self.HEIGHT))
 
         self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         pygame.display.set_caption("Low Gravity Platformer")
@@ -54,12 +63,15 @@ class Game:
 
     def drawPlatforms(self):
         for platform in self.level_platforms[self.level - 1]:
-            pygame.draw.rect(self.screen, (0, 0, 0), platform)
+            pygame.draw.rect(self.screen, (13, 181, 24), platform)
 
     def run(self):
         # Create the game window
         clock = pygame.time.Clock()
         pygame.init()
+
+        # Set up font
+        font = pygame.font.Font(None, 36)
 
         # Main game loop
         while True:
@@ -109,6 +121,12 @@ class Game:
 
             #Check Platform Collisions
             self.checkCollision(self.level_platforms[self.level - 1])
+
+            #Draw Score
+            self.screen.blit(font.render(self.score, True, (0, 0, 0)), (10, 0))
+
+            #Draw Distractions
+            pygame.draw.rect(self.screen, (235, 213, 52), (self.distraction.get_x(), self.distraction.get_y(), self.distraction.get_size(), self.distraction.get_size()))
 
             # Update the display
             pygame.display.flip()
