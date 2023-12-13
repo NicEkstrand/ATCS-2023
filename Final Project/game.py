@@ -23,7 +23,7 @@ class Game:
         self.days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
         self.score = 100
         self.hero = Player(25, self.WIDTH // 2 - 50 // 2, self.HEIGHT // 2 - 50 // 2, 0, 0)
-        self.distraction = Distraction(self.WIDTH // 2 - 50 // 2, 0, 25, 1)
+        self.distraction = Distraction(self.WIDTH // 2 - 50 // 2, 0, 25, 1, self.hero)
         self.level = level
         self.level_platforms = [[(300, 300, 200, 20), (400, 400, 100, 20), (150, 200, 100, 20), (150, 100, 75, 10), (500, 500, 30, 20), (50, 50, 50, 20)],
                          [(400, 250, 100, 20), (100, 600, 80, 20), (300, 550, 50, 20), (100, 450, 40, 20), (200, 375, 100, 20), (500, 150, 100, 20), (650, 50, 40, 20)],
@@ -65,12 +65,12 @@ class Game:
                         game.screen = pygame.display.set_mode((game.WIDTH, game.HEIGHT))
                         game.hero.set_y(game.HEIGHT - 100)
 
-    def checkDistractionCollision(self):
+    def checkSingleCollision(self, thing):
         if (
-            self.hero.get_x() < self.distraction.get_x() + self.distraction.get_size()
-            and self.hero.get_x() + self.hero.get_size() > self.distraction.get_x()
-            and self.hero.get_y() < self.distraction.get_y() + self.distraction.get_size()
-            and self.hero.get_y() + self.hero.get_size() > self.distraction.get_y()
+            self.hero.get_x() < thing.get_x() + thing.get_size()
+            and self.hero.get_x() + self.hero.get_size() > thing.get_x()
+            and self.hero.get_y() < thing.get_y() + thing.get_size()
+            and self.hero.get_y() + self.hero.get_size() > thing.get_y()
             ):
             self.score -= 1
 
@@ -135,20 +135,21 @@ class Game:
             # Draw the player and distraction
             pygame.draw.rect(self.screen, self.RED, (self.hero.get_x(), self.hero.get_y(), self.hero.get_size(), self.hero.get_size()))
             pygame.draw.rect(self.screen, self.RED, (self.distraction.get_x(), self.distraction.get_y(), self.distraction.get_size(), self.distraction.get_size()))
-            self.distraction.track(self.hero)
 
             #Draw Rectangles
             self.drawPlatforms()
 
             #Check Platform Collisions
             self.checkCollision(self.level_platforms[self.level - 1])
-            self.checkDistractionCollision()
+            self.checkSingleCollision(self.distraction)
+            self.checkSingleCollision()
 
             #Draw Score and Day
             self.screen.blit(font.render(str(self.score), True, (0, 0, 0)), (10, 0))
             self.screen.blit(font.render(self.days[self.level - 1], True, (0, 0, 0)), (self.WIDTH / 2 - 50, 0))
 
-            #
+            #FSM Processing
+            self.distraction.fsm.process("see_player")
 
             #Draw Distractions
             pygame.draw.rect(self.screen, (235, 213, 52), (self.distraction.get_x(), self.distraction.get_y(), self.distraction.get_size(), self.distraction.get_size()))
